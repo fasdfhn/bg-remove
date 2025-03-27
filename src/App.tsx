@@ -13,12 +13,12 @@ export interface ImageFile {
   processedFile?: File;
 }
 
-// Sample images from Unsplash
+// Sample images from Unsplash - new selection
 const sampleImages = [
-  "https://images.unsplash.com/photo-1601233749202-95d04d5b3c00?q=80&w=2938&auto=format&fit=crop&ixlib=rb-4.0.3",
-  "https://images.unsplash.com/photo-1513013156887-d2bf241c8c82?q=80&w=2970&auto=format&fit=crop&ixlib=rb-4.0.3",
-  "https://images.unsplash.com/photo-1643490745745-e8ca9a3a1c90?q=80&w=2874&auto=format&fit=crop&ixlib=rb-4.0.3",
-  "https://images.unsplash.com/photo-1574158622682-e40e69881006?q=80&w=2333&auto=format&fit=crop&ixlib=rb-4.0.3"
+  "https://images.unsplash.com/photo-1581044777550-4cfa60707c03?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=986&q=80", // Fashion model
+  "https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80", // Red shoe
+  "https://images.unsplash.com/photo-1560343090-f0409e92791a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80", // Houseplant
+  "https://images.unsplash.com/photo-1583394838336-acd977736f90?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=768&q=80"  // Product shot
 ];
 
 // Check if the user is on mobile Safari
@@ -35,13 +35,11 @@ export default function App() {
   const [error, setError] = useState<AppError | null>(null);
   const [isWebGPU, setIsWebGPU] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
-  const [currentModel, setCurrentModel] = useState<'briaai/RMBG-1.4' | 'Xenova/modnet'>('briaai/RMBG-1.4');
-  const [isModelSwitching, setIsModelSwitching] = useState(false);
   const [images, setImages] = useState<ImageFile[]>([]);
 
   useEffect(() => {
     if (isMobileSafari()) {
-      window.location.href = 'https://bg-mobile.addy.ie';
+      window.location.href = 'https://m.bg-swap.com';
       return;
     }
 
@@ -50,29 +48,6 @@ export default function App() {
     setIsIOS(isIOSDevice);
     setIsLoading(false);
   }, []);
-
-  const handleModelChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const newModel = event.target.value as typeof currentModel;
-    setIsModelSwitching(true);
-    setError(null);
-    try {
-      const initialized = await initializeModel(newModel);
-      if (!initialized) {
-        throw new Error("Failed to initialize new model");
-      }
-      setCurrentModel(newModel);
-    } catch (err) {
-      if (err instanceof Error && err.message.includes("Falling back")) {
-        setCurrentModel('briaai/RMBG-1.4');
-      } else {
-        setError({
-          message: err instanceof Error ? err.message : "Failed to switch models"
-        });
-      }
-    } finally {
-      setIsModelSwitching(false);
-    }
-  };
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
     const newImages = acceptedFiles.map((file, index) => ({
@@ -91,9 +66,6 @@ export default function App() {
         if (!initialized) {
           throw new Error("Failed to initialize background removal model");
         }
-        // Update WebGPU support status after model initialization
-        const { isWebGPUSupported } = getModelInfo();
-        setIsWebGPU(isWebGPUSupported);
       } catch (err) {
         setError({
           message: err instanceof Error ? err.message : "An unknown error occurred"
@@ -120,7 +92,6 @@ export default function App() {
       }
     }
   }, [images.length]);
-
 
   const handlePaste = async (event: React.ClipboardEvent) => {
     const clipboardItems = event.clipboardData.items;
@@ -162,145 +133,237 @@ export default function App() {
     },
   });
 
-  // Remove the full screen error and loading states
-
   return (
-    <div className="min-h-screen bg-gray-50" onPaste={handlePaste}>
-      <nav className="bg-white shadow-sm">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-indigo-800" onPaste={handlePaste}>
+      {/* Header */}
+      <header className="bg-black/20 backdrop-blur-md border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-gray-800">
-              BG
-            </h1>
-            {!isIOS && (
-              <div className="flex items-center gap-4">
-                <span className="text-gray-600">Model:</span>
-                <select
-                  value={currentModel}
-                  onChange={handleModelChange}
-                  className="bg-white border border-gray-300 rounded-md px-3 py-1 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  disabled={!isWebGPU}
-                >
-                  <option value="briaai/RMBG-1.4">RMBG-1.4 (Cross-browser)</option>
-                  {isWebGPU && (
-                    <option value="Xenova/modnet">MODNet (WebGPU)</option>
-                  )}
-                </select>
+            <div className="flex items-center">
+              <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center mr-3">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
               </div>
-            )}
+              <h1 className="text-2xl font-bold text-white">
+                BG Swap
+              </h1>
+            </div>
           </div>
           {isIOS && (
-            <p className="text-sm text-gray-500 mt-2">
+            <p className="text-sm text-gray-300 mt-2 flex items-center">
+              <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
               Using optimized iOS background removal
             </p>
           )}
         </div>
-      </nav>
+      </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className={`grid ${images.length === 0 ? 'grid-cols-2 gap-8' : 'grid-cols-1'}`}>
-          {images.length === 0 && (
-            <div className="flex flex-col justify-center items-start">
-              <img 
-                src="hero.png"
-                alt="Surprised man"
-                className="mb-6 w-full object-cover h-[400px]"
-              />
-              <h2 className="text-3xl font-bold text-gray-800 mb-4">
-                Remove Image Background
-              </h2>
-              <p className="text-lg text-gray-600 mb-4">
-                100% Automatically and Free
-              </p>
-              <p className="text-gray-500">
-                Upload your image and let our AI remove the background instantly. Perfect for professional photos, product images, and more.
-              </p>
-              <p className="text-sm text-gray-300 mt-4">
-                Built with love by Addy Osmani using Transformers.js
-              </p>
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        {/* Breadcrumb */}
+        {images.length > 0 && (
+          <div className="flex items-center text-sm text-gray-300 mb-4">
+            <span className="hover:text-pink-400 cursor-pointer" onClick={() => setImages([])}>Home</span>
+            <svg className="w-4 h-4 mx-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+            <span className="text-white">Your Images ({images.length})</span>
+          </div>
+        )}
+
+        {/* Main content */}
+        {images.length === 0 ? (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Hero section */}
+            <div className="bg-black/30 backdrop-blur-sm rounded-3xl overflow-hidden border border-white/10 shadow-xl">
+              <div className="relative">
+                <img 
+                  src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80"
+                  alt="Professional background removal example"
+                  className="w-full object-cover h-[300px]"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
+                <div className="absolute bottom-0 left-0 p-8 text-white">
+                  <h2 className="text-4xl font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400">
+                    AI Background Removal
+                  </h2>
+                  <p className="text-xl text-gray-300">
+                    Fast, Free, and Powerful
+                  </p>
+                </div>
+              </div>
+              <div className="p-8 space-y-6">
+                <div className="space-y-4">
+                  <div className="flex items-start">
+                    <div className="bg-pink-500/20 p-2 rounded-full mr-4 mt-1">
+                      <svg className="w-5 h-5 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 className="text-white font-medium text-lg">Instant Results</h3>
+                      <p className="text-gray-400">Remove backgrounds in seconds with our advanced AI technology</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start">
+                    <div className="bg-purple-500/20 p-2 rounded-full mr-4 mt-1">
+                      <svg className="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 className="text-white font-medium text-lg">Secure & Private</h3>
+                      <p className="text-gray-400">Your images are handled with the highest privacy standards</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start">
+                    <div className="bg-blue-500/20 p-2 rounded-full mr-4 mt-1">
+                      <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 className="text-white font-medium text-lg">Professional Quality</h3>
+                      <p className="text-gray-400">Perfect for e-commerce, social media, and creative projects</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-          )}
-          
-          <div className={images.length === 0 ? '' : 'w-full'}>
-            <div
-              {...getRootProps()}
-              className={`p-8 mb-8 border-2 border-dashed rounded-lg text-center cursor-pointer transition-colors duration-300 ease-in-out bg-white
-                ${isDragAccept ? "border-green-500 bg-green-50" : ""}
-                ${isDragReject ? "border-red-500 bg-red-50" : ""}
-                ${isDragActive ? "border-blue-500 bg-blue-50" : "border-gray-300 hover:border-blue-500 hover:bg-blue-50"}
-                ${isLoading || isModelSwitching ? "cursor-not-allowed" : ""}
-              `}
-            >
-              <input {...getInputProps()} className="hidden" disabled={isLoading || isModelSwitching} />
-              <div className="flex flex-col items-center gap-2">
-                {isLoading || isModelSwitching ? (
-                  <>
-                    <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600 mb-2"></div>
-                    <p className="text-lg text-gray-600">
-                      {isModelSwitching ? 'Switching models...' : 'Loading background removal model...'}
-                    </p>
-                  </>
-                ) : error ? (
-                  <>
-                    <svg className="w-12 h-12 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                    </svg>
-                    <p className="text-lg text-red-600 font-medium mb-2">{error.message}</p>
-                    {currentModel === 'Xenova/modnet' && (
+            
+            {/* Upload section */}
+            <div className="space-y-6">
+              <div
+                {...getRootProps()}
+                className={`p-8 border-2 border-dashed rounded-3xl text-center cursor-pointer transition-all duration-300 ease-in-out bg-black/30 backdrop-blur-sm h-[300px] flex flex-col items-center justify-center
+                  ${isDragAccept ? "border-green-400 bg-green-900/20" : ""}
+                  ${isDragReject ? "border-red-400 bg-red-900/20" : ""}
+                  ${isDragActive ? "border-blue-400 bg-blue-900/20" : "border-gray-600 hover:border-pink-400"}
+                  ${isLoading ? "cursor-not-allowed opacity-75" : ""}
+                `}
+              >
+                <input {...getInputProps()} className="hidden" disabled={isLoading} />
+                <div className="flex flex-col items-center gap-4">
+                  {isLoading ? (
+                    <>
+                      <div className="w-16 h-16 rounded-full border-4 border-pink-500/30 border-t-pink-500 animate-spin"></div>
+                      <p className="text-xl text-gray-300 font-medium">
+                        Loading background removal model...
+                      </p>
+                      <p className="text-sm text-gray-400">This may take a few moments</p>
+                    </>
+                  ) : error ? (
+                    <>
+                      <div className="bg-red-500/20 rounded-full p-4">
+                        <svg className="w-10 h-10 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                      </div>
+                      <p className="text-xl text-red-400 font-medium mb-2">{error.message}</p>
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleModelChange({ target: { value: 'briaai/RMBG-1.4' }} as any);
+                          setError(null);
+                          setIsLoading(true);
+                          initializeModel().then(() => setIsLoading(false)).catch(err => {
+                            setError({
+                              message: err instanceof Error ? err.message : "An unknown error occurred"
+                            });
+                            setIsLoading(false);
+                          });
                         }}
-                        className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                        className="px-6 py-2 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-full hover:from-pink-600 hover:to-purple-700 transition-colors shadow-lg shadow-purple-900/30"
                       >
-                        Switch to Cross-browser Version
+                        Try Again
                       </button>
-                    )}
-                  </>
-                ) : (
-                  <>
-                    <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                    </svg>
-                    <p className="text-lg text-gray-600">
-                      {isDragActive
-                        ? "Drop the images here..."
-                        : "Drag and drop images here"}
-                    </p>
-                    <p className="text-sm text-gray-500">or click to select files</p>
-                  </>
-                )}
+                    </>
+                  ) : (
+                    <>
+                      <div className="relative">
+                        <div className="absolute -inset-1 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full blur opacity-30 animate-pulse"></div>
+                        <div className="relative bg-black/50 rounded-full p-5">
+                          <svg className="w-12 h-12 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                          </svg>
+                        </div>
+                      </div>
+                      <p className="text-2xl font-medium text-white">
+                        {isDragActive
+                          ? "Drop to upload"
+                          : "Drag & drop images here"}
+                      </p>
+                      <div className="flex items-center gap-2 text-gray-400">
+                        <span>or</span>
+                        <button 
+                          className="px-5 py-2 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-full hover:from-pink-600 hover:to-purple-700 transition-colors shadow-lg shadow-purple-900/30"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          Browse files
+                        </button>
+                      </div>
+                      <p className="text-xs text-gray-500 mt-2">Supports JPG, PNG, WEBP</p>
+                    </>
+                  )}
+                </div>
               </div>
-            </div>
 
-            {images.length === 0 && (
-              <div className="bg-white rounded-lg p-6 shadow-sm">
-                <h3 className="text-xl text-gray-700 font-semibold mb-4">No image? Try one of these:</h3>
+              {/* Sample images */}
+              <div className="bg-black/30 backdrop-blur-sm rounded-3xl p-6 border border-white/10">
+                <h3 className="text-xl text-white font-semibold mb-4 flex items-center">
+                  <svg className="w-5 h-5 mr-2 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                  </svg>
+                  Try with a sample image
+                </h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {sampleImages.map((url, index) => (
                     <button
                       key={index}
                       onClick={() => handleSampleImageClick(url)}
-                      className="relative aspect-square overflow-hidden rounded-lg hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="relative aspect-square overflow-hidden rounded-xl border border-white/10 hover:border-pink-400 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-pink-500 shadow-lg shadow-black/30 group"
                     >
                       <img
                         src={url}
                         alt={`Sample ${index + 1}`}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover transition-transform group-hover:scale-110 duration-500"
                       />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-3">
+                        <span className="text-white text-sm font-medium px-3 py-1 bg-pink-500/70 rounded-full">Use this image</span>
+                      </div>
                     </button>
                   ))}
                 </div>
-                <p className="text-sm text-gray-500 mt-4">
-                  All images are processed locally on your device and are not uploaded to any server.
-                </p>
               </div>
-            )}
-
+            </div>
+          </div>
+        ) : (
+          <div className="w-full">
             <Images images={images} onDelete={(id) => setImages(prev => prev.filter(img => img.id !== id))} />
           </div>
-        </div>
+        )}
+
+        {/* Footer */}
+        <footer className="mt-12 pt-6 border-t border-white/10">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <p className="text-sm text-gray-400">
+              © {new Date().getFullYear()} BG Swap. All rights reserved.
+            </p>
+            <div className="mt-4 md:mt-0">
+              <ul className="flex space-x-6 text-sm">
+                <li><a href="/privacy" className="text-gray-400 hover:text-pink-400 transition-colors">Privacy Policy</a></li>
+                <li><a href="/terms" className="text-gray-400 hover:text-pink-400 transition-colors">Terms of Service</a></li>
+                <li><a href="/contact" className="text-gray-400 hover:text-pink-400 transition-colors">Contact Us</a></li>
+              </ul>
+            </div>
+          </div>
+          <div className="mt-6 text-xs text-gray-500 max-w-3xl">
+            <p>BG Swap is an advanced AI-powered background removal tool that helps you remove backgrounds from images instantly. Perfect for product photography, portraits, ID photos, and more. Our tool processes all images locally on your device, ensuring complete privacy and security.</p>
+          </div>
+        </footer>
       </main>
     </div>
   );
