@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import { Images } from "./components/Images";
 import { processImages, initializeModel, getModelInfo } from "../lib/process";
+import { LanguageProvider, useLanguage } from "./i18n/LanguageContext";
 
 interface AppError {
   message: string;
@@ -30,12 +31,24 @@ const isMobileSafari = () => {
   return iOSSafari && 'ontouchend' in document;
 };
 
-export default function App() {
+// Wrap the app with the language provider
+const AppWithLanguage = () => {
+  return (
+    <LanguageProvider>
+      <AppContent />
+    </LanguageProvider>
+  );
+};
+
+// Main app content with translations
+const AppContent = () => {
+  const { language, setLanguage, t } = useLanguage();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<AppError | null>(null);
   const [isWebGPU, setIsWebGPU] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
   const [images, setImages] = useState<ImageFile[]>([]);
+  const [showPricingTooltip, setShowPricingTooltip] = useState(false);
 
   useEffect(() => {
     if (isMobileSafari()) {
@@ -133,47 +146,104 @@ export default function App() {
     },
   });
 
+  // Language switcher component
+  const LanguageSwitcher = () => {
+    return (
+      <div className="flex items-center space-x-2">
+        <button 
+          onClick={() => setLanguage('en')} 
+          className={`px-2 py-1 rounded ${language === 'en' ? 'bg-white text-indigo-600' : 'text-white/70 hover:text-white'}`}
+        >
+          EN
+        </button>
+        <button 
+          onClick={() => setLanguage('es')} 
+          className={`px-2 py-1 rounded ${language === 'es' ? 'bg-white text-indigo-600' : 'text-white/70 hover:text-white'}`}
+        >
+          ES
+        </button>
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-white" onPaste={handlePaste}>
-      {/* Header - Simplified, modern design */}
+      {/* Header with language switcher */}
       <header className="bg-gradient-to-r from-violet-600 to-indigo-600 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
-              <svg className="w-8 h-8 mr-3" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M17 8l-5-5-5 5M12 3v12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-              <h1 className="text-2xl font-bold">BG Swap</h1>
+              <a href="/" className="flex items-center">
+                <svg className="w-8 h-8 mr-3" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M17 8l-5-5-5 5M12 3v12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                <h1 className="text-2xl font-bold">BG Swap</h1>
+              </a>
             </div>
-            <nav>
-              <ul className="flex space-x-6">
-                <li><a href="#" className="hover:text-indigo-200 transition-colors">Home</a></li>
-                <li><a href="#" className="hover:text-indigo-200 transition-colors">Pricing</a></li>
-                <li><a href="/contact" className="hover:text-indigo-200 transition-colors">Contact</a></li>
-              </ul>
-            </nav>
+            <div className="flex items-center space-x-6">
+              <nav>
+                <ul className="flex space-x-6">
+                  <li>
+                    <a 
+                      href="/" 
+                      className="hover:text-indigo-200 transition-colors"
+                    >
+                      {t('home')}
+                    </a>
+                  </li>
+                  <li>
+                    <div className="relative">
+                      <button 
+                        onClick={() => setShowPricingTooltip(!showPricingTooltip)}
+                        className="hover:text-indigo-200 transition-colors cursor-pointer"
+                      >
+                        {t('pricing')}
+                      </button>
+                      
+                      {showPricingTooltip && (
+                        <div className="absolute z-10 mt-2 -left-24 w-64 bg-white text-gray-800 rounded-lg shadow-xl p-4 text-sm">
+                          <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-4 h-4 rotate-45 bg-white"></div>
+                          <p className="font-semibold text-indigo-600 mb-1">{t('comingSoon')}</p>
+                          <p>{t('pricingMessage')}</p>
+                          <button 
+                            onClick={() => setShowPricingTooltip(false)}
+                            className="absolute top-1 right-1 text-gray-400 hover:text-gray-600"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </li>
+                  <li><a href="/contact" className="hover:text-indigo-200 transition-colors">{t('contact')}</a></li>
+                </ul>
+              </nav>
+              <LanguageSwitcher />
+            </div>
           </div>
         </div>
       </header>
 
-      {/* Main content */}
+      {/* Main content with translations */}
       <main>
         {images.length === 0 ? (
           <>
-            {/* Hero section - Full width, asymmetric design */}
+            {/* Hero section with translations */}
             <section className="relative overflow-hidden bg-gradient-to-br from-indigo-50 to-white py-20">
               <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Hero text - centered at the top */}
                 <div className="text-center mb-12">
                   <h2 className="text-5xl font-bold text-gray-900 leading-tight">
-                    Remove Image <br />
+                    {t('removeBackground')} <br />
                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-indigo-600">
-                      Backgrounds Instantly
+                      {t('backgroundsInstantly')}
                     </span>
                   </h2>
                   <p className="mt-6 text-xl text-gray-600 max-w-2xl mx-auto">
-                    Professional-quality background removal powered by AI. Perfect for product photos, portraits, and design work.
+                    {t('heroDescription')}
                   </p>
                   
                   <div className="flex flex-wrap gap-4 justify-center mt-8">
@@ -181,24 +251,24 @@ export default function App() {
                       className="px-8 py-3 bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-lg font-medium shadow-lg shadow-indigo-200 hover:shadow-xl hover:from-violet-700 hover:to-indigo-700 transition-all"
                       onClick={() => document.getElementById('upload-section')?.scrollIntoView({behavior: 'smooth'})}
                     >
-                      Get Started
+                      {t('getStarted')}
                     </button>
                     <a 
                       href="#samples" 
                       className="px-8 py-3 bg-white text-indigo-600 border border-indigo-200 rounded-lg font-medium shadow-sm hover:shadow-md hover:bg-indigo-50 transition-all"
                     >
-                      View Samples
+                      {t('viewSamples')}
                     </a>
                   </div>
                 </div>
                 
-                {/* Upload box - below the hero text */}
+                {/* Upload box with translations */}
                 <div className="relative max-w-3xl mx-auto">
                   <div className="absolute -inset-4 bg-gradient-to-r from-violet-200 to-indigo-200 rounded-3xl blur-xl opacity-50"></div>
                   <div className="relative bg-white p-6 rounded-2xl shadow-xl">
                     <div id="upload-section" className="mb-6">
-                      <h3 className="text-2xl font-bold text-gray-800 mb-4">Upload Your Image</h3>
-                      <p className="text-gray-600 mb-6">Drag & drop your image or click to browse</p>
+                      <h3 className="text-2xl font-bold text-gray-800 mb-4">{t('uploadYourImage')}</h3>
+                      <p className="text-gray-600 mb-6">{t('dragAndDrop')}</p>
                       
                       <div
                         {...getRootProps()}
@@ -261,7 +331,7 @@ export default function App() {
                     </div>
                     
                     <div id="samples">
-                      <h3 className="text-lg font-semibold text-gray-800 mb-3">Or try with a sample:</h3>
+                      <h3 className="text-lg font-semibold text-gray-800 mb-3">{t('tryWithSample')}</h3>
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                         {sampleImages.map((url, index) => (
                           <button
@@ -284,19 +354,19 @@ export default function App() {
                   </div>
                 </div>
                 
-                {/* Feature boxes - below the upload section */}
+                {/* Feature boxes with translations */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-12">
                   <div className="bg-white p-4 rounded-lg shadow-sm">
-                    <div className="text-indigo-600 font-bold text-xl mb-1">Fast</div>
-                    <p className="text-gray-600 text-sm">Results in seconds</p>
+                    <div className="text-indigo-600 font-bold text-xl mb-1">{t('fast')}</div>
+                    <p className="text-gray-600 text-sm">{t('fastDescription')}</p>
                   </div>
                   <div className="bg-white p-4 rounded-lg shadow-sm">
-                    <div className="text-indigo-600 font-bold text-xl mb-1">Secure</div>
-                    <p className="text-gray-600 text-sm">Privacy guaranteed</p>
+                    <div className="text-indigo-600 font-bold text-xl mb-1">{t('free')}</div>
+                    <p className="text-gray-600 text-sm">{t('freeDescription')}</p>
                   </div>
                   <div className="bg-white p-4 rounded-lg shadow-sm">
-                    <div className="text-indigo-600 font-bold text-xl mb-1">Pro</div>
-                    <p className="text-gray-600 text-sm">Studio quality</p>
+                    <div className="text-indigo-600 font-bold text-xl mb-1">{t('unlimited')}</div>
+                    <p className="text-gray-600 text-sm">{t('unlimitedDescription')}</p>
                   </div>
                 </div>
               </div>
@@ -306,45 +376,42 @@ export default function App() {
               <div className="absolute bottom-0 left-0 -mb-20 -ml-20 w-80 h-80 bg-violet-100 rounded-full opacity-50 blur-3xl"></div>
             </section>
             
-            {/* Features section */}
+            {/* How it works section with translations */}
             <section className="py-20 bg-gray-50">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-16">
-                  <h2 className="text-3xl font-bold text-gray-900">How It Works</h2>
+                  <h2 className="text-3xl font-bold text-gray-900">{t('howItWorks')}</h2>
                   <p className="mt-4 text-xl text-gray-600 max-w-2xl mx-auto">
-                    Remove backgrounds in three simple steps
+                    {t('howItWorksDescription')}
                   </p>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                  {/* Step 1 */}
                   <div className="bg-white p-8 rounded-xl shadow-md">
                     <div className="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mb-6">
                       <span className="text-xl font-bold">1</span>
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-3">Upload Your Image</h3>
-                    <p className="text-gray-600">
-                      Drag and drop your image or select from your device. We support JPG, PNG, and WEBP formats.
-                    </p>
+                    <h3 className="text-xl font-bold text-gray-900 mb-3">{t('step1Title')}</h3>
+                    <p className="text-gray-600">{t('step1Description')}</p>
                   </div>
                   
+                  {/* Step 2 */}
                   <div className="bg-white p-8 rounded-xl shadow-md">
                     <div className="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mb-6">
                       <span className="text-xl font-bold">2</span>
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-3">AI Processing</h3>
-                    <p className="text-gray-600">
-                      Our advanced AI technology automatically detects and removes the background from your image.
-                    </p>
+                    <h3 className="text-xl font-bold text-gray-900 mb-3">{t('step2Title')}</h3>
+                    <p className="text-gray-600">{t('step2Description')}</p>
                   </div>
                   
+                  {/* Step 3 */}
                   <div className="bg-white p-8 rounded-xl shadow-md">
                     <div className="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mb-6">
                       <span className="text-xl font-bold">3</span>
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-3">Download Result</h3>
-                    <p className="text-gray-600">
-                      Download your image with the background removed. Ready to use for your projects.
-                    </p>
+                    <h3 className="text-xl font-bold text-gray-900 mb-3">{t('step3Title')}</h3>
+                    <p className="text-gray-600">{t('step3Description')}</p>
                   </div>
                 </div>
               </div>
@@ -354,12 +421,12 @@ export default function App() {
           <section className="py-12 bg-white">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="flex items-center justify-between mb-8">
-                <h2 className="text-2xl font-bold text-gray-900">Your Images</h2>
+                <h2 className="text-2xl font-bold text-gray-900">{t('yourImages')}</h2>
                 <button 
                   onClick={() => setImages([])} 
                   className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
                 >
-                  Back to Home
+                  {t('backToHome')}
                 </button>
               </div>
               <Images images={images} onDelete={(id) => setImages(prev => prev.filter(img => img.id !== id))} />
@@ -368,7 +435,7 @@ export default function App() {
         )}
       </main>
 
-      {/* Footer */}
+      {/* Footer with translations */}
       <footer className="bg-gray-900 text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -381,7 +448,7 @@ export default function App() {
                 <h3 className="text-xl font-bold">BG Swap</h3>
               </div>
               <p className="text-gray-400">
-                Advanced AI-powered background removal tool for professional results.
+                BG Swap is a free, unlimited AI-powered background removal tool that delivers professional results instantly. No sign-up required, no usage limits, and no watermarks.
               </p>
             </div>
             
@@ -439,4 +506,7 @@ export default function App() {
       </footer>
     </div>
   );
-}
+};
+
+// Export the wrapped component
+export default AppWithLanguage;
