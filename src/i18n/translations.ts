@@ -8,9 +8,9 @@ export const translations = {
     contact: "Contact",
     
     // Hero section
-    removeBackground: "Remove Image",
-    backgroundsInstantly: "Backgrounds Instantly",
-    heroDescription: "Professional-quality background removal powered by AI. 100% free with no usage limits. Perfect for product photos, portraits, and design work.",
+    removeBackground: "Remove Image Backgrounds",
+    backgroundsInstantly: "For Perfect White Wallpapers",
+    heroDescription: "Professional-quality background removal powered by AI. Create stunning white wallpapers and checkered wallpapers with 100% free, unlimited usage. Perfect for product photos, portraits, and design work.",
     getStarted: "Get Started",
     viewSamples: "View Samples",
     
@@ -66,11 +66,21 @@ export const translations = {
     privacy: "Privacy",
     terms: "Terms",
     allRightsReserved: "All rights reserved.",
-    footerDescription: "BG Swap is a free, unlimited AI-powered background removal tool that delivers professional results instantly. No sign-up required, no usage limits, and no watermarks.",
+    footerDescription: "BG Swap is a free, unlimited AI-powered background removal tool that delivers professional results instantly. Create perfect white wallpapers and checkered wallpapers with no sign-up required, no usage limits, and no watermarks.",
     
     // Pricing tooltip
     comingSoon: "Coming Soon!",
-    pricingMessage: "BG Swap is currently 100% free! Take advantage of unlimited usage now before we introduce our premium plans."
+    pricingMessage: "BG Swap is currently 100% free! Take advantage of unlimited usage now before we introduce our premium plans.",
+    
+    // Wallpaper use cases
+    popularUses: "Popular Wallpaper Uses",
+    popularUsesDescription: "Create stunning wallpapers by removing backgrounds from your images",
+    whiteWallpaper: "White Wallpaper",
+    whiteWallpaperDescription: "Create clean, minimalist white wallpapers by removing backgrounds from your subjects. Perfect for product photography and modern designs.",
+    checkeredWallpaper: "Checkered Wallpaper",
+    checkeredWallpaperDescription: "Place your subjects on trendy checkered wallpaper backgrounds for eye-catching contrast and visual interest.",
+    customWallpaper: "Custom Wallpaper",
+    customWallpaperDescription: "Design unique wallpapers by combining multiple background-removed images on any backdrop of your choice.",
   },
   es: {
     // Header
@@ -79,9 +89,9 @@ export const translations = {
     contact: "Contacto",
     
     // Hero section
-    removeBackground: "Elimina el Fondo",
-    backgroundsInstantly: "de Imágenes al Instante",
-    heroDescription: "Eliminación de fondos de calidad profesional impulsada por IA. 100% gratis y sin límites de uso. Perfecto para fotos de productos, retratos y diseño.",
+    removeBackground: "Elimina Fondos de Imágenes",
+    backgroundsInstantly: "Para Fondos Blancos Perfectos",
+    heroDescription: "Eliminación de fondos de calidad profesional impulsada por IA. Crea impresionantes fondos blancos y fondos a cuadros con uso 100% gratuito e ilimitado. Perfecto para fotos de productos, retratos y diseño.",
     getStarted: "Comenzar",
     viewSamples: "Ver Ejemplos",
     
@@ -137,11 +147,21 @@ export const translations = {
     privacy: "Privacidad",
     terms: "Términos",
     allRightsReserved: "Todos los derechos reservados.",
-    footerDescription: "BG Swap es una herramienta gratuita e ilimitada de eliminación de fondos impulsada por IA que ofrece resultados profesionales al instante. No requiere registro, sin límites de uso y sin marcas de agua.",
+    footerDescription: "BG Swap es una herramienta gratuita e ilimitada de eliminación de fondos impulsada por IA que ofrece resultados profesionales al instante. Crea fondos blancos y fondos a cuadros perfectos sin registro, sin límites de uso y sin marcas de agua.",
     
     // Pricing tooltip
     comingSoon: "¡Próximamente!",
-    pricingMessage: "¡BG Swap es actualmente 100% gratis! Aprovecha el uso ilimitado ahora antes de que introduzcamos nuestros planes premium."
+    pricingMessage: "¡BG Swap es actualmente 100% gratis! Aprovecha el uso ilimitado ahora antes de que introduzcamos nuestros planes premium.",
+    
+    // Wallpaper use cases
+    popularUses: "Usos Populares para Fondos",
+    popularUsesDescription: "Crea impresionantes fondos de pantalla eliminando los fondos de tus imágenes",
+    whiteWallpaper: "Fondo Blanco",
+    whiteWallpaperDescription: "Crea fondos blancos limpios y minimalistas eliminando los fondos de tus sujetos. Perfecto para fotografía de productos y diseños modernos.",
+    checkeredWallpaper: "Fondo a Cuadros",
+    checkeredWallpaperDescription: "Coloca tus sujetos sobre fondos a cuadros de moda para un contraste llamativo e interés visual.",
+    customWallpaper: "Fondo Personalizado",
+    customWallpaperDescription: "Diseña fondos únicos combinando múltiples imágenes sin fondo en cualquier escenario de tu elección.",
   }
 };
 

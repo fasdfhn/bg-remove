@@ -416,6 +416,57 @@ const AppContent = () => {
                 </div>
               </div>
             </section>
+
+            {/* Add a new section highlighting wallpaper use cases */}
+
+            <section className="py-16 bg-white">
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="text-center mb-12">
+                  <h2 className="text-3xl font-bold text-gray-900">{t('popularUses')}</h2>
+                  <p className="mt-4 text-xl text-gray-600 max-w-2xl mx-auto">
+                    {t('popularUsesDescription')}
+                  </p>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                  <div className="bg-gray-50 rounded-xl p-6 shadow-sm">
+                    <div className="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mb-4">
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">{t('whiteWallpaper')}</h3>
+                    <p className="text-gray-600">
+                      {t('whiteWallpaperDescription')}
+                    </p>
+                  </div>
+                  
+                  <div className="bg-gray-50 rounded-xl p-6 shadow-sm">
+                    <div className="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mb-4">
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+                      </svg>
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">{t('checkeredWallpaper')}</h3>
+                    <p className="text-gray-600">
+                      {t('checkeredWallpaperDescription')}
+                    </p>
+                  </div>
+                  
+                  <div className="bg-gray-50 rounded-xl p-6 shadow-sm">
+                    <div className="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mb-4">
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">{t('customWallpaper')}</h3>
+                    <p className="text-gray-600">
+                      {t('customWallpaperDescription')}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </section>
           </>
         ) : (
           <section className="py-12 bg-white">
