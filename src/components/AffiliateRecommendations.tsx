@@ -3,18 +3,32 @@ import React from 'react';
 const AffiliateRecommendations = () => {
   const products = [
     {
-      title: "Professional Hair Dryer with Ionic Technology",
-      description: "Fast-drying, low noise professional hair dryer with multiple heat settings",
+      title: "Huggies Size 1 Diapers",
+      description: "Huggies Size 1 Diapers, Skin Essentials Baby Diapers, Size 1 (8-14 lbs), 29 Count, Packaging May Vary",
       link: "https://amzn.to/42bs8qs",
       price: "$79.99",
       tag: "#ad"
     },
     {
-      title: "Modelones Gel Nail Kit with LED Light",
-      description: "Professional nail kit with 150 PCS press-on nails and LED lamp",
+      title: "Modelones Gel Nail Kit",
+      description: "Modelones Gel Nail Kit, Press On Nails Kit with LED Light, 150 PCS Extra Short Pink Square, 15 Sizes French Tip Press on Nails, NailBoxie Pre-Colored Nail Tips for Easy DIY Nail Art",
       link: "https://amzn.to/42raKN4", 
-      price: "$24.99",
+      price: "7.99",
       tag: "#commissionsearned"
+    },
+    {
+      title: "iPhone 16 Pro Case",
+      description: "SUPFINE Magnetic for iPhone 16 Pro Case (Compatible with MagSafe) (Military Grade Drop Protection) Slim Translucent Matte Shockproof with Anti-Fingerprint Phone Case,Black",
+      link: "https://amzn.to/4crAtJL",
+      price: "$7.99",
+      tag: "#ad"
+    },
+    {
+      title: "Women Summer Outfits",
+      description: "SAMPEEL Two Piece Sets for Women Summer Outfits Lounge Sets Mock Neck Tops Wide Leg Crop Pants Vacation Travel Outfits",
+      link: "https://amzn.to/4crtpgt",
+      price: "$26.98",
+      tag: "#ad"
     }
   ];
 
@@ -24,7 +38,7 @@ const AffiliateRecommendations = () => {
         Recommended Products 
         <span className="text-sm font-normal text-gray-400 ml-2">#ad</span>
       </h3>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
         {products.map((product, index) => (
           <a 
             key={index}
