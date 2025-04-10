@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import type { ImageFile } from "../App";
 import { EditModal } from "./EditModal";
+import AffiliateRecommendations from './AffiliateRecommendations';
 
 interface ImagesProps {
   images: ImageFile[];
@@ -20,6 +21,9 @@ export function Images({ images, onDelete }: ImagesProps) {
           }
         })}
       </div>
+
+      {/* Add affiliate recommendations while processing */}
+      <AffiliateRecommendations />
     </div>
   );
 }
