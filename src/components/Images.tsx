@@ -11,7 +11,34 @@ interface ImagesProps {
 export function Images({ images, onDelete }: ImagesProps) {
   return (
     <div>
-      <h2 className="hidden text-gray-800 text-xl font-semibold mb-4">Images: {images.length}</h2>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="hidden text-gray-800 text-xl font-semibold">Images: {images.length}</h2>
+        <a 
+          href="https://pixobloom.com/"
+          target="_blank"
+          rel="nofollow sponsored"
+          className="group relative inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-medium rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+        >
+          <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-purple-600 to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+          <span className="relative flex items-center">
+            <svg 
+              className="w-5 h-5 mr-2" 
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+            >
+              <path 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                strokeWidth="2" 
+                d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+              />
+            </svg>
+            More AI Image Editing Tools
+          </span>
+        </a>
+      </div>
+
       <div className="gap-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {images.map((image) => {
           if(image.file.type.includes("video")) {
